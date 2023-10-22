@@ -20,7 +20,10 @@ fetchBreeds()
     });
     breedInfo = data;
   })
-  .catch(err => console.log(err));
+  .catch(err => {
+    Notiflix.Notify.Failure('Oops! Something went wrong loading the breeds! Try reloading the page!');
+    console.error(err);
+  });
 
 selector.addEventListener('change', event => {
     loader.style.display = 'inline-block';
@@ -30,11 +33,14 @@ selector.addEventListener('change', event => {
       catInfo.innerHTML = `
         <img src="${data[0].url}" alt="${info.name}" width="300" />
         <h2>${info.name}</h2>
-        <p><strong>Опис:</strong> ${info.description}</p>
-        <p><strong>Темперамент:</strong> ${info.temperament}</p>
+        <p><strong>Description:</strong> ${info.description}</p>
+        <p><strong>Temperament:</strong> ${info.temperament}</p>
         `;
         loader.style.display = 'none';
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+        Notiflix.Notify.Failure('Oops! Something went wrong loading the cat info! Try reloading the page!');
+        console.error(err);
+    });
 });
 
