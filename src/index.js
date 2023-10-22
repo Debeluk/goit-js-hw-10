@@ -1,4 +1,6 @@
 import axios from 'axios';
+import Notiflix from 'notiflix';
+import SlimSelect from 'slim-select';
 import { fetchBreeds,fetchCatByBreed } from './cat-api.js';
 
 axios.defaults.headers.common['x-api-key'] =
@@ -26,15 +28,17 @@ fetchBreeds()
   });
 
 selector.addEventListener('change', event => {
-    loader.style.display = 'inline-block';
+    loader.style.display = 'flex';
   const info = breedInfo.find(item => item.id === event.target.value);
   fetchCatByBreed(event.target.value)
     .then(data => {
       catInfo.innerHTML = `
+        <div class="img-div">
         <img src="${data[0].url}" alt="${info.name}" width="300" />
+        </div>
         <h2>${info.name}</h2>
-        <p><strong>Description:</strong> ${info.description}</p>
-        <p><strong>Temperament:</strong> ${info.temperament}</p>
+        <h3> Description: ${info.description}</h3>
+        <p> Temperament: ${info.temperament}</p>
         `;
         loader.style.display = 'none';
     })
