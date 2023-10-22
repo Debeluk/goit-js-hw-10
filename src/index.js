@@ -6,6 +6,7 @@ axios.defaults.headers.common['x-api-key'] =
 
 const selector = document.querySelector('.breed-select');
 const catInfo = document.querySelector('.cat-info');
+const loader = document.querySelector('.loader');
 
 let breedInfo = [];
 
@@ -22,6 +23,7 @@ fetchBreeds()
   .catch(err => console.log(err));
 
 selector.addEventListener('change', event => {
+    loader.style.display = 'inline-block';
   const info = breedInfo.find(item => item.id === event.target.value);
   fetchCatByBreed(event.target.value)
     .then(data => {
@@ -31,6 +33,8 @@ selector.addEventListener('change', event => {
         <p><strong>Опис:</strong> ${info.description}</p>
         <p><strong>Темперамент:</strong> ${info.temperament}</p>
         `;
+        loader.style.display = 'none';
     })
     .catch(err => console.log(err));
 });
+
