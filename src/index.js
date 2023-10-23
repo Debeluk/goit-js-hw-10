@@ -1,6 +1,5 @@
 import axios from 'axios';
-import Notiflix from 'notiflix';
-import SlimSelect from 'slim-select';
+import { Notify } from 'notiflix';
 import { fetchBreeds,fetchCatByBreed } from './cat-api.js';
 
 axios.defaults.headers.common['x-api-key'] = 'live_7OmHCNWsSrqi3vdA1HFMl0CkV035BNyesghrSC8tUcfriqDjnLMsFYPhRtKIyotP';
@@ -29,34 +28,40 @@ document.addEventListener('DOMContentLoaded', (event) => {
       loader.style.display = 'none';
     })
     .catch(err => {
-      Notiflix.Notify.Failure('Oops! Something went wrong loading the breeds! Try reloading the page!');
+      Notify.failure('Oops! Something went wrong loading the breeds! Try reloading the page!');
       console.error(err);
 
       selector.style.display = 'flex';
       loader.style.display = 'none';
     });
 
-  selector.addEventListener('change', event => {
-    loader.style.display = 'flex';
-    catInfo.innerHTML = '';
-
-    const info = breedInfo.find(item => item.id === event.target.value);
-    fetchCatByBreed(event.target.value)
-      .then(data => {
-        catInfo.innerHTML = `
-          <div class="img-div">
-            <img src="${data[0].url}" alt="${info.name}" width="300" />
-          </div>
-          <h2>${info.name}</h2>
-          <h3> Description: ${info.description}</h3>
-          <p> Temperament: ${info.temperament}</p>
-        `;
-        loader.style.display = 'none';
-      })
-      .catch(err => {
-        Notiflix.Notify.Failure('Oops! Something went wrong loading the cat info! Try reloading the page!');
-        console.error(err);
-        loader.style.display = 'none';
-      });
+    selector.addEventListener('change', event => {
+      loader.style.display = 'flex';
+      catInfo.innerHTML = '';
+  
+      const info = breedInfo.find(item => item.id === event.target.value);
+      fetchCatByBreed(event.target.value)
+        .then(data => {
+          if (data.length === 0) {
+            loader.style.display = 'none';
+            Notify.failure('No images found for this breed.');
+            return;
+          }
+  
+          catInfo.innerHTML = `
+            <div class="img-div">
+              <img src="${data[0].url}" alt="${info.name}" width="300" />
+            </div>
+            <h2>${info.name}</h2>
+            <h3> Description: ${info.description}</h3>
+            <p> Temperament: ${info.temperament}</p>
+          `;
+          loader.style.display = 'none';
+        })
+        .catch(err => {
+          Notify.failure('Oops! Something went wrong loading the cat info! Try reloading the page!');
+          console.error(err);
+          loader.style.display = 'none';
+        });
   });
 });
